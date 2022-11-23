@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+{% block title %}Error{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="card mt-2" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">Error</h5>
+    <p class="card-text">Looks like you've got banned and can't make posts anymore :(</p>
+    <a href="/home" class="btn btn-secondary">Close</a>
+  </div>
+</div>
+{% endblock content %}

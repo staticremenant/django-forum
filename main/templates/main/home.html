@@ -1,0 +1,127 @@
+{% extends 'main/base.html' %}
+{% block title %}Home page{% endblock %}
+{% block content %}
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) {
+    var scrollpos = localStorage.getItem("scrollpos");
+    if (scrollpos) window.scrollTo(0, scrollpos);
+  });
+
+  window.onscroll = function (e) {
+    localStorage.setItem("scrollpos", window.scrollY);
+  };
+</script>
+
+<button type="button" class="scroll-top btn btn-secondary">Go to top</button>
+{% if messages %}
+<div class="messages mt-2">
+    {% for message in messages %}
+    <div  {% if message.tags %} class=" {{ message.tags }} " {% endif %}>
+      <div class="alert alert-warning" role="alert">
+        {{message}}
+      </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% for post in posts %}
+<div class="card mt-2">
+  <div class="card-header"><strong>@{{post.author.username}}</strong>
+    ({% if post.author.is_staff %}
+    admin
+    {% elif post.author.groups.all.last %}
+    {{post.author.groups.all.last}}
+    {% else %}
+    banned
+    {% endif %})
+  </div>
+  <div class="card-body d-flex flex-row justify-content-between">
+    <div>
+      <h5 class="card-title">{{post.title}}</h5>
+      <hr class="mt-0 mb-2">
+      <p>{{post.description}}</p>
+      {% if post.image %}
+      <img src="{{post.image.url}}/" class="mt-2" height="300">
+      {% endif %}
+    </div>
+    <div>
+      {% if user == post.author or perms.main.delete_post%}
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-danger" name="post-id" value="{{post.id}}">Delete post</button>
+        </form>
+      {% endif %}
+      {% if user.is_staff %}
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-dark mt-2" name="user-id" value="{{post.author.id}}">Ban user</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card-footer text-muted">{{post.created_at}}</div>
+  <div class="accordion accordion-flush" id="accordionFlush{{post.id}}">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="flush-heading{{post.id}}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{post.id}}" aria-expanded="false" aria-controls="flush-collapse{{post.id}}">
+          <strong>Comments section</strong>
+        </button>
+      </h2>
+      <div id="flush-collapse{{post.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{post.id}}" data-bs-parent="#accordionFlush{{post.id}}">
+        <div class="accordion-body">
+          {% if perms.main.add_post %}
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{comment}}
+              <button type="submit" class="btn btn-sm btn-dark mt-2 mb-2" name="leave_a_comment" value="{{post.id}}">Send</button>
+              <hr class="mt-0 mb-2">
+            </form>
+          {% endif %}
+          {% for comment_item in comments%}
+            {% if comment_item.post == post %}
+              <div class="card-title ms-1"><strong>@{{comment_item.author.username}}</strong>
+                ({% if comment_item.author.is_staff %}
+                admin
+                {% elif comment_item.author.groups.all.last %}
+                {{comment_item.author.groups.all.last}}
+                {% else %}
+                banned
+                {% endif %}):</div>
+              <div class="ms-1">{{comment_item.content}}</div>
+                {% if comment_item.image %}
+                <img src="{{comment_item.image.url}}/" class="mt-2" height="200">
+                {% endif %}
+              <div class="text-muted ms-1">{{comment_item.created_at}}</div>
+              <div>
+                {% if user == comment_item.author or perms.main.delete_post%}
+                  <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger mt-1" name="delete_comment" value="{{comment_item.id}}">Delete comment</button>
+                  </form>
+                {% endif %}
+                {% if user.is_staff %}
+                <form method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-sm btn-outline-dark mt-1" name="ban_user_by_comment" value="{{comment_item.author.id}}">Ban user</button>
+                </form>
+                {% endif %}
+              </div>
+              <hr class="mt-2 mb-1">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="card mt-2" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">No posts yet...</h5>
+    <p class="card-text">It's pretty quiet here :(</p>
+    <a href="/create-post" class="btn btn-secondary">Create post</a>
+  </div>
+</div>
+{% endfor %}
+<hr class="mt-2 mb-2">
+{% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% block title %}My account{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="card mt-4" style="width: 20rem;">
+  <div class="card-body">
+    <h4 class="card-title">Account info</h4>
+    <h6 class="card-subtitle mb-2 text-muted">username: {{user.username}}</h6>
+    <h6 class="card-subtitle mb-1 text-muted">member since: {{user.date_joined}}</h6>
+    <h6 class="card-subtitle mb-1 text-muted">status:
+      {% if user.is_staff %}
+        admin
+      {% elif user.groups.all.last %}
+        {{user.groups.all.last}}
+      {% else %}
+        banned
+      {% endif %}
+    </h6>
+    <a href="/password_change" class="btn btn-secondary mt-1">Change password</a>
+    <form method="post" class="mt-2">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger" name="user-id" value="{{user.id}}">Delete account</button>
+    </form>
+  </div>
+</div>
+{% endblock content %}
