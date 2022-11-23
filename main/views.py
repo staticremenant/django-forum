@@ -54,7 +54,8 @@ def home(request):
                 comment = form.save(commit=False)
                 comment.author = request.user
                 comment.post = Post.objects.filter(id=post_id).first()
-                comment.save()
+                if comment.content or comment.image:
+                    comment.save()
             form = CommentForm()
 
         elif delete_comment:
@@ -94,8 +95,9 @@ def create_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.save()
-            return redirect('/home')
+            if post.description or post.title or post.image:
+                post.save()
+                return redirect('/home')
     else:
         form = PostForm()
 

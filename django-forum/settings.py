@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'django-forum.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite4',ы
+        'NAME': BASE_DIR / 'db.sqlite4',
     }
 }
 

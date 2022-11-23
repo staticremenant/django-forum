@@ -37,9 +37,11 @@
   </div>
   <div class="card-body d-flex flex-row justify-content-between">
     <div>
+      {% if post.title %}
       <h5 class="card-title">{{post.title}}</h5>
       <hr class="mt-0 mb-2">
-      <p>{{post.description}}</p>
+      {% endif %}
+      {{post.description}}
       {% if post.image %}
       <img src="{{post.image.url}}/" class="mt-2" height="300">
       {% endif %}

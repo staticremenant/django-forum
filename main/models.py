@@ -5,7 +5,7 @@ import PIL
 # Create your models here.
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d/', default=None, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,7 +16,6 @@ class Post(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d/', default=None, blank=True)
