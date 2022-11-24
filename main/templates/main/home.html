@@ -37,11 +37,11 @@
   </div>
   <div class="card-body d-flex flex-row justify-content-between">
     <div>
-      {% if post.title %}
+      {% if post.title and post.title != "image"%}
       <h5 class="card-title">{{post.title}}</h5>
       <hr class="mt-0 mb-2">
       {% endif %}
-      {{post.description}}
+      <div>{{post.description}}</div>
       {% if post.image %}
       <img src="{{post.image.url}}/" class="mt-2" height="300">
       {% endif %}
@@ -89,7 +89,9 @@
                 {% else %}
                 banned
                 {% endif %}):</div>
+              {% if comment_item.content != "image" %}
               <div class="ms-1">{{comment_item.content}}</div>
+              {% endif %}
                 {% if comment_item.image %}
                 <img src="{{comment_item.image.url}}/" class="mt-2" height="200">
                 {% endif %}

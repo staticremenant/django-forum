@@ -33,7 +33,7 @@ def home(request):
 
         elif user_id:
             user = User.objects.filter(id=user_id).first()
-            if user and request.user.is_staff and request.user != user:
+            if user and request.user.is_staff and (request.user != user):
                 try:
                     group = Group.objects.get(name='default')
                     group.user_set.remove(user)
@@ -55,6 +55,8 @@ def home(request):
                 comment.author = request.user
                 comment.post = Post.objects.filter(id=post_id).first()
                 if comment.content or comment.image:
+                    if not comment.content:
+                        comment.content = "image"
                     comment.save()
             form = CommentForm()
 
@@ -71,7 +73,7 @@ def home(request):
 
         elif ban_user_by_comment:
             user = User.objects.filter(id=ban_user_by_comment).first()
-            if user and request.user.is_staff and request.user != user:
+            if user and request.user.is_staff and (request.user != user):
                 try:
                     group = Group.objects.get(name='default')
                     group.user_set.remove(user)
@@ -96,6 +98,8 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             if post.description or post.title or post.image:
+                if not post.title and not post.description:
+                    post.title = "image"
                 post.save()
                 return redirect('/home')
     else:
