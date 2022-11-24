@@ -85,7 +85,7 @@ def home(request):
                     group.user_set.remove(user)
                 except:
                     pass
-            messages.success(request, f'{user} have been banned')
+            messages.success(request, f'@{user} have been banned')
 
     return render(request, 'main/home.html', {'posts': posts[::-1], 'comment': form, 'comments': comments})
 
