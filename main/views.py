@@ -45,7 +45,7 @@ def home(request):
                     group.user_set.remove(user)
                 except:
                     pass
-            messages.success(request, f'{user} have been banned')
+            messages.success(request, f'@{user} have been banned')
 
         elif leave_a_comment:
             form = CommentForm(data=request.POST, files=request.FILES)
