@@ -17,7 +17,7 @@ class PostForm(forms.ModelForm):
         fields = ['title', 'description', 'image']
 
 class CommentForm(forms.ModelForm):
-    content = forms.CharField(required=False, widget=forms.Textarea(attrs={
+    content = forms.CharField(max_length=2500, required=False, widget=forms.Textarea(attrs={
     'class': 'md-textarea form-control',
     'placeholder': 'leave a comment...',
     'rows': '1',
